@@ -1,0 +1,96 @@
+:root {
+  /* ---- Color: deep ink vault, not a generic SaaS dashboard ---- */
+  --color-bg: #10131a;
+  --color-bg-elevated: #171b24;
+  --color-panel: #1b2029;
+  --color-panel-hover: #212733;
+  --color-border: #2a3040;
+  --color-border-strong: #384157;
+
+  --color-text-primary: #e9ecf1;
+  --color-text-secondary: #aab2c5;
+  --color-text-muted: #6b7386;
+
+  --color-accent: #4fd1c5;
+  --color-accent-strong: #2fb8ab;
+  --color-accent-wash: rgba(79, 209, 197, 0.12);
+
+  --color-warning: #e8a33d;
+  --color-warning-wash: rgba(232, 163, 61, 0.14);
+
+  --color-danger: #e8615f;
+  --color-danger-wash: rgba(232, 97, 95, 0.12);
+
+  --color-focus-ring: #6fd8ff;
+
+  /* ---- Type ---- */
+  --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+
+  /* ---- Spacing scale ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* ---- Shape ---- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-full: 999px;
+
+  /* ---- Motion ---- */
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --duration-fast: 120ms;
+  --duration-medium: 220ms;
+
+  /* ---- Layout ---- */
+  --app-max-width: 480px;
+
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  :root.theme-system {
+    --color-bg: #f4f5f7;
+    --color-bg-elevated: #ffffff;
+    --color-panel: #ffffff;
+    --color-panel-hover: #f0f1f4;
+    --color-border: #dde0e7;
+    --color-border-strong: #c5cad6;
+
+    --color-text-primary: #171b24;
+    --color-text-secondary: #4b5468;
+    --color-text-muted: #8891a3;
+
+    --color-accent-wash: rgba(47, 184, 171, 0.1);
+    --color-warning-wash: rgba(232, 163, 61, 0.12);
+    --color-danger-wash: rgba(232, 97, 95, 0.1);
+
+    color-scheme: light;
+  }
+}
+
+:root.theme-light {
+  --color-bg: #f4f5f7;
+  --color-bg-elevated: #ffffff;
+  --color-panel: #ffffff;
+  --color-panel-hover: #f0f1f4;
+  --color-border: #dde0e7;
+  --color-border-strong: #c5cad6;
+
+  --color-text-primary: #171b24;
+  --color-text-secondary: #4b5468;
+  --color-text-muted: #8891a3;
+
+  --color-accent-wash: rgba(47, 184, 171, 0.1);
+  --color-warning-wash: rgba(232, 163, 61, 0.12);
+  --color-danger-wash: rgba(232, 97, 95, 0.1);
+
+  color-scheme: light;
+}
