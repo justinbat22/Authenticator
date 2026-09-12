@@ -212,3 +212,10 @@ a {
   border-radius: var(--radius-lg);
   padding: var(--space-5);
 }
+@font-face {
+  font-family: 'MyFont';
+  src: url('/fonts/MyFont.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
