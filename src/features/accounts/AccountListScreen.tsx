@@ -47,7 +47,7 @@ export function AccountListScreen({ onOpenSettings }: AccountListScreenProps) {
           borderBottom: '1px solid var(--color-border)',
         }}
       >
-        <h1 style={{ fontSize: 19, fontFamily: 'MyFont, sans-serif' }}>Authenticator</h1>
+        <h1 style={{ fontSize: 19, fontFamily: 'MyFont, sans-serif' }}>AUTHENTICATOR</h1>
         <div style={{ display: 'flex', gap: 4 }}>
           <button type="button" onClick={lock} aria-label="Lock vault" className="btn-ghost" style={iconBtn}>
             <Lock size={19} />
