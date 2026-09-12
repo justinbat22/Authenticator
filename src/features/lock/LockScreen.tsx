@@ -1,9 +1,14 @@
-import { Fingerprint, Lock } from 'lucide-react'
+import { Fingerprint } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { PasswordField } from '../../components/PasswordField'
 import { useVault } from '../../app/vaultHooks'
+import { GateLayout } from '../gate/GateLayout'
 
-export function LockScreen() {
+interface LockScreenProps {
+  onOpenDocs: () => void
+}
+
+export function LockScreen({ onOpenDocs }: LockScreenProps) {
   const { unlock, unlockViaWebAuthn, webAuthnEnrolled } = useVault()
   const [passphrase, setPassphrase] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -35,36 +40,11 @@ export function LockScreen() {
   }
 
   return (
-    <div
-      style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        padding: 'var(--space-6) var(--space-5)',
-        gap: 'var(--space-6)',
-      }}
-    >
-      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-        <div
-          style={{
-            width: 56,
-            height: 56,
-            borderRadius: 'var(--radius-full)',
-            background: 'var(--color-panel)',
-            border: '1px solid var(--color-border)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto',
-          }}
-        >
-          <Lock size={24} color="var(--color-text-secondary)" />
-        </div>
-        <h1 style={{ fontSize: 22 }}>Vault locked</h1>
-      </div>
-
+    <GateLayout onOpenDocs={onOpenDocs} tagline="Welcome back. Enter your passphrase to open your vault.">
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        <h2 style={{ fontSize: 16, textAlign: 'center', color: 'var(--color-text-primary)' }}>
+          Open your vault
+        </h2>
         <PasswordField
           label="Passphrase"
           value={passphrase}
@@ -92,6 +72,6 @@ export function LockScreen() {
           Unlock with device
         </button>
       ) : null}
-    </div>
+    </GateLayout>
   )
 }

@@ -27,6 +27,7 @@
   --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  --font-wordmark: 'MyFont', var(--font-display);
 
   /* ---- Spacing scale ---- */
   --space-1: 4px;

@@ -1,95 +1,95 @@
-# Web Authenticator
+<div align="center">
 
-An offline-first TOTP (2FA) authenticator you run yourself: a web app that
-generates the same six/eight-digit codes as Google Authenticator, Authy, or
-1Password's authenticator — with every account secret encrypted at rest,
-under a key that never leaves your device.
+<img src="public/pwa-512.png" width="96" height="96" alt="Authenticator logo" />
 
-Read [SECURITY.md](./SECURITY.md) for the full threat model, cryptographic
-design, and known limitations before relying on this for anything important.
+# Authenticator
+
+**An offline-first, self-hosted TOTP (2FA) authenticator.**
+Every account is encrypted on your device — nothing ever touches a server.
+
+[![CI](https://github.com/subashbuilds/Authenticator/actions/workflows/ci.yml/badge.svg)](https://github.com/subashbuilds/Authenticator/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-informational.svg)](./LICENSE)
+[![Stars](https://img.shields.io/github/stars/subashbuilds/Authenticator?style=flat&color=yellow)](https://github.com/subashbuilds/Authenticator/stargazers)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)](https://react.dev/)
+[![PWA](https://img.shields.io/badge/PWA-installable-5A0FC8?logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
+
+[Documentation](./DOCUMENTATION.md) · [Security](./SECURITY.md) · [Report an issue](https://github.com/subashbuilds/Authenticator/issues) · **If this is useful, a ⭐ star helps others find it.**
+
+</div>
+
+---
+
+## Why this exists
+
+Most authenticator apps ask you to trust a company with your 2FA secrets — sync them to
+"the cloud," bundle them into a broader password-manager subscription, or run closed-source
+code you can't inspect. This is the alternative: a small, auditable, self-hosted web app that
+does exactly one thing — generate TOTP codes — with every secret encrypted client-side under a
+key that never leaves your device, and no network dependency at all once it's loaded.
 
 ## Features
 
-- **Standards-compliant TOTP** (RFC 6238) and HOTP (RFC 4226) — SHA-1,
-  SHA-256, and SHA-512, 6 or 8 digits, configurable period. Verified against
-  the official RFC test vectors (see `src/otp/*.test.ts`).
-- **Add accounts** by scanning a QR code (camera), pasting an `otpauth://`
-  link, or entering the secret manually.
-- **Export a QR code** for any existing account, to move it to another
-  authenticator app or a second device.
-- **Encrypted at rest**: every account is encrypted with AES-256-GCM before
-  it touches IndexedDB. See [SECURITY.md](./SECURITY.md) for the key
-  architecture.
-- **Optional device unlock** via WebAuthn (fingerprint/face/security key),
-  when your browser and authenticator support the PRF extension.
-- **Encrypted backups**: export all accounts to a password-protected JSON
-  file; import with merge-or-replace.
-- **Installable PWA**, fully usable offline once loaded — code generation
-  never needs a network request.
-- **Auto-lock** after configurable inactivity, dark/light/system theme.
+- 📷 **Add accounts four ways** — scan a QR code with your camera, upload a screenshot of one
+  (handy if you're setting this up from the same device the QR is displayed on), paste an
+  `otpauth://` link, or type the secret in manually.
+- 🔒 **Encrypted at rest** — AES-256-GCM, key derived via PBKDF2 (600k iterations), architecture
+  detailed in [SECURITY.md](./SECURITY.md).
+- 🔑 **Optional biometric/device unlock** via WebAuthn's PRF extension — genuinely adds
+  encryption, not just a UI gate (see [Security](./SECURITY.md#webauthn-unlock-prf-only-by-design)).
+- 💾 **Encrypted, portable backups** — password-protected export/import, independent of your
+  vault passphrase.
+- 📱 **Installable PWA** — works fully offline once loaded; add it to your home screen like a
+  native app.
+- 🎨 Auto-lock, dark/light/system theme, QR export for moving an account to another app.
+
+## Screenshots
+
+| Welcome | Vault |
+|---|---|
+| _Create or open your vault_ | _Live codes with countdown_ |
 
 ## Getting started
 
 ```bash
+git clone https://github.com/subashbuilds/Authenticator.git
+cd Authenticator
 npm install
-npm run dev       # local dev server
-npm test          # run the test suite
-npm run build     # type-check + production build to dist/
-npm run preview   # serve the production build locally
+npm run dev
 ```
 
-Requires a browser with the Web Crypto API, IndexedDB, and (for QR scanning)
-camera access. WebAuthn unlock additionally requires an authenticator that
-supports the PRF extension — most 2023+ platform authenticators do; many
-older ones and most USB security keys as of this writing do not. The app
-still works fully with just a passphrase if PRF isn't available.
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Local development server |
+| `npm test` | Run the test suite |
+| `npm run build` | Type-check + production build → `dist/` |
+| `npm run preview` | Serve the production build locally |
+| `npm run lint` | Lint the codebase |
 
-## Project structure
+Requires a browser with the Web Crypto API, IndexedDB, and (for QR scanning) camera access.
 
-```
-src/
-  otp/          Base32 codec, HOTP, TOTP, otpauth:// URI parsing — the
-                 standards-compliant core, independently unit-tested.
-  crypto/        PBKDF2 key derivation, AES-256-GCM encrypt/decrypt.
-  storage/       IndexedDB persistence (accounts + vault metadata).
-  services/      Vault lifecycle: create, unlock, change passphrase.
-  webauthn/      WebAuthn PRF-based unlock.
-  qr/            Camera-based QR scanning (getUserMedia + jsQR).
-  app/           React context wiring the above into UI state.
-  features/      Screens: onboarding, lock, accounts, settings, backup.
-  components/    Small shared UI primitives.
-```
+## Deploying
 
-The `otp/`, `crypto/`, `storage/`, and `services/` layers have no
-dependency on React and are fully unit/integration tested independent of
-the UI (68 tests as of this writing, run with `npm test`).
+`npm run build` produces a static `dist/` folder — deploy it to any static host (Cloudflare
+Pages, Netlify, Vercel, GitHub Pages, or your own server). No backend, database, or environment
+variables are required.
 
-## Data & portability
+## Tech stack
 
-Everything lives in this browser's IndexedDB for this origin. Clearing site
-data, using a different browser, or using private/incognito mode all mean a
-separate, empty vault. There is no cloud sync — **use the export/backup
-feature regularly**, and store the resulting file somewhere durable (a
-password manager attachment, an encrypted drive, etc.).
+React 19 · TypeScript (strict) · Vite · Web Crypto API · IndexedDB (via `idb`) · `vite-plugin-pwa`
+· `jsqr` for QR decoding · Vitest for testing.
 
-## Known limitations
+## Documentation
 
-- No cloud sync or multi-device sync — each browser profile is its own
-  vault. Use export/import to move between devices.
-- WebAuthn unlock requires PRF support; the app does not offer a
-  weaker "unlock gate" fallback, because that would not actually add
-  encryption and would be misleading to advertise as a security feature.
-- Camera-based QR scanning requires a real browser context and camera
-  permission; it was implemented and code-reviewed but, in the environment
-  this project was built in, could not be exercised end-to-end against a
-  live camera. Test it in your target browser before relying on it, and
-  use "paste a link" or "enter manually" as fallbacks.
-- No automated end-to-end UI tests (e.g. Playwright) are included — testing
-  focused on the security-critical core (crypto, OTP math, vault lifecycle,
-  backup parsing). See [SECURITY.md](./SECURITY.md) for what was and wasn't
-  verified.
+Full usage guide, the complete security model, backup/restore instructions, and FAQ live in
+**[DOCUMENTATION.md](./DOCUMENTATION.md)** — the same content is also available inside the app
+itself (tap **Documentation** on the welcome screen or in Settings).
+
+## Contributing
+
+Issues and pull requests are welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## License
 
-No license file is included; add one appropriate to your use before
-distributing this.
+[MIT](./LICENSE)

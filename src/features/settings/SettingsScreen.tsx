@@ -1,6 +1,7 @@
-import { ChevronLeft, Download, Fingerprint, KeyRound, Trash2, Upload } from 'lucide-react'
+import { BookOpen, ChevronLeft, Download, Fingerprint, KeyRound, Star, Trash2, Upload } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { useVault } from '../../app/vaultHooks'
+import { GITHUB_REPO_URL } from '../../app/links'
 import { applyTheme, getStoredTheme, setStoredTheme, type ThemePreference } from '../../app/theme'
 import { ChangePassphraseModal } from './ChangePassphraseModal'
 import { EnrollWebAuthnModal } from './EnrollWebAuthnModal'
@@ -11,6 +12,7 @@ import { wipeDatabase, closeDb } from '../../storage/db'
 
 interface SettingsScreenProps {
   onBack: () => void
+  onOpenDocs: () => void
 }
 
 const AUTO_LOCK_OPTIONS = [
@@ -21,7 +23,7 @@ const AUTO_LOCK_OPTIONS = [
   { label: 'Never', minutes: 0 },
 ]
 
-export function SettingsScreen({ onBack }: SettingsScreenProps) {
+export function SettingsScreen({ onBack, onOpenDocs }: SettingsScreenProps) {
   const { meta, webAuthnSupported, webAuthnEnrolled, setAutoLockMinutes, disableWebAuthn, accounts } =
     useVault()
   const [theme, setTheme] = useState<ThemePreference>(getStoredTheme())
@@ -124,8 +126,26 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
           <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
             {accounts.length} account{accounts.length === 1 ? '' : 's'} stored, encrypted with
             AES-256-GCM under a key derived from your passphrase via PBKDF2. Nothing leaves this
-            device. See SECURITY.md in the project for full details and known limitations.
+            device.
           </p>
+          <SettingRow label="Documentation" onClick={onOpenDocs} icon={<BookOpen size={17} />} />
+          <a
+            href={GITHUB_REPO_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="card"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--space-3)',
+              padding: 'var(--space-4)',
+              textDecoration: 'none',
+              color: 'var(--color-text-primary)',
+            }}
+          >
+            <Star size={17} />
+            <span style={{ fontSize: 14, fontWeight: 500 }}>Star on GitHub</span>
+          </a>
         </Section>
 
         <Section title="Danger zone">

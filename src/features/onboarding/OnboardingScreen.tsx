@@ -1,10 +1,14 @@
-import { ShieldCheck } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { PasswordField } from '../../components/PasswordField'
 import { MIN_PASSPHRASE_LENGTH } from '../../services/vaultService'
 import { useVault } from '../../app/vaultHooks'
+import { GateLayout } from '../gate/GateLayout'
 
-export function OnboardingScreen() {
+interface OnboardingScreenProps {
+  onOpenDocs: () => void
+}
+
+export function OnboardingScreen({ onOpenDocs }: OnboardingScreenProps) {
   const { createVault } = useVault()
   const [passphrase, setPassphrase] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -40,39 +44,14 @@ export function OnboardingScreen() {
   }
 
   return (
-    <div
-      style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        padding: 'var(--space-6) var(--space-5)',
-        gap: 'var(--space-6)',
-      }}
+    <GateLayout
+      onOpenDocs={onOpenDocs}
+      tagline="An offline-first authenticator that keeps every account encrypted on this device — nothing is ever sent anywhere."
     >
-      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-        <div
-          style={{
-            width: 56,
-            height: 56,
-            borderRadius: 'var(--radius-full)',
-            background: 'var(--color-accent-wash)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto',
-          }}
-        >
-          <ShieldCheck size={28} color="var(--color-accent)" />
-        </div>
-        <h1 style={{ fontSize: 24 }}>Set up your vault</h1>
-        <p style={{ color: 'var(--color-text-secondary)', fontSize: 15, lineHeight: 1.5 }}>
-          Choose a passphrase to encrypt your accounts on this device. It never leaves your
-          device and we can't reset it for you — write it down somewhere safe.
-        </p>
-      </div>
-
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        <h2 style={{ fontSize: 16, textAlign: 'center', color: 'var(--color-text-primary)' }}>
+          Create your vault
+        </h2>
         <PasswordField
           label="Passphrase"
           value={passphrase}
@@ -118,6 +97,6 @@ export function OnboardingScreen() {
           {busy ? 'Creating vault…' : 'Create vault'}
         </button>
       </form>
-    </div>
+    </GateLayout>
   )
 }

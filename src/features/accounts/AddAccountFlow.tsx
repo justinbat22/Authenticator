@@ -1,6 +1,8 @@
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type ChangeEvent, type FormEvent } from 'react'
+import { Upload } from 'lucide-react'
 import { Modal } from '../../components/Modal'
 import { QrScannerView } from '../../qr/QrScannerView'
+import { decodeQrFromFile } from '../../qr/decodeFromImage'
 import { parseOtpAuthUri, type ParsedOtpAuth } from '../../otp/otpauth'
 import { isValidBase32, normalizeBase32 } from '../../otp/base32'
 import { generateTotp } from '../../otp/totp'
@@ -8,7 +10,7 @@ import { useVault } from '../../app/vaultHooks'
 import type { OtpAlgorithm, OtpDigits } from '../../types/account'
 import { DEFAULT_ALGORITHM, DEFAULT_DIGITS, DEFAULT_PERIOD } from '../../types/account'
 
-type Tab = 'scan' | 'paste' | 'manual'
+type Tab = 'scan' | 'upload' | 'paste' | 'manual'
 
 interface AddAccountFlowProps {
   onClose: () => void
@@ -49,8 +51,9 @@ export function AddAccountFlow({ onClose }: AddAccountFlowProps) {
   return (
     <Modal title="Add account" onClose={onClose}>
       <div style={{ display: 'flex', gap: 4, marginBottom: 'var(--space-4)' }}>
-        <TabButton label="Scan QR" active={tab === 'scan'} onClick={() => setTab('scan')} />
-        <TabButton label="Paste link" active={tab === 'paste'} onClick={() => setTab('paste')} />
+        <TabButton label="Scan" active={tab === 'scan'} onClick={() => setTab('scan')} />
+        <TabButton label="Upload" active={tab === 'upload'} onClick={() => setTab('upload')} />
+        <TabButton label="Paste" active={tab === 'paste'} onClick={() => setTab('paste')} />
         <TabButton label="Manual" active={tab === 'manual'} onClick={() => setTab('manual')} />
       </div>
 
@@ -68,6 +71,8 @@ export function AddAccountFlow({ onClose }: AddAccountFlowProps) {
           </p>
         </div>
       ) : null}
+
+      {tab === 'upload' ? <UploadQrImageForm onDetected={handleParsedResult} onError={setError} /> : null}
 
       {tab === 'paste' ? <PasteLinkForm onSubmit={handleParsedResult} /> : null}
 
@@ -87,6 +92,61 @@ export function AddAccountFlow({ onClose }: AddAccountFlowProps) {
         />
       ) : null}
     </Modal>
+  )
+}
+
+function UploadQrImageForm({
+  onDetected,
+  onError,
+}: {
+  onDetected: (uri: string) => void
+  onError: (message: string | null) => void
+}) {
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [fileName, setFileName] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+
+  async function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setFileName(file.name)
+    onError(null)
+    setBusy(true)
+    try {
+      const uri = await decodeQrFromFile(file)
+      onDetected(uri)
+    } catch (err) {
+      onError(err instanceof Error ? err.message : 'Could not read a QR code from that image.')
+    } finally {
+      setBusy(false)
+      // Allow re-selecting the same file if the user wants to retry.
+      e.target.value = ''
+    }
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+      <button
+        type="button"
+        onClick={() => fileInputRef.current?.click()}
+        className="btn btn-secondary btn-full"
+        disabled={busy}
+      >
+        <Upload size={16} />
+        {busy ? 'Reading…' : (fileName ?? 'Choose an image')}
+      </button>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
+      />
+      <p style={{ fontSize: 13, color: 'var(--color-text-muted)', textAlign: 'center' }}>
+        Good for when scanning with a second device's camera isn't an option — save or
+        screenshot the QR code image, then upload it here.
+      </p>
+    </div>
   )
 }
 

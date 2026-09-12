@@ -5,22 +5,28 @@ import { OnboardingScreen } from './features/onboarding/OnboardingScreen'
 import { LockScreen } from './features/lock/LockScreen'
 import { AccountListScreen } from './features/accounts/AccountListScreen'
 import { SettingsScreen } from './features/settings/SettingsScreen'
+import { DocumentationScreen } from './features/docs/DocumentationScreen'
 
 function AppRoutes() {
   const { status } = useVault()
   const [showSettings, setShowSettings] = useState(false)
+  const [showDocs, setShowDocs] = useState(false)
+
+  if (showDocs) {
+    return <DocumentationScreen onBack={() => setShowDocs(false)} />
+  }
 
   if (status === 'loading') {
     return <div style={{ flex: 1 }} />
   }
   if (status === 'uninitialized') {
-    return <OnboardingScreen />
+    return <OnboardingScreen onOpenDocs={() => setShowDocs(true)} />
   }
   if (status === 'locked') {
-    return <LockScreen />
+    return <LockScreen onOpenDocs={() => setShowDocs(true)} />
   }
   return showSettings ? (
-    <SettingsScreen onBack={() => setShowSettings(false)} />
+    <SettingsScreen onBack={() => setShowSettings(false)} onOpenDocs={() => setShowDocs(true)} />
   ) : (
     <AccountListScreen onOpenSettings={() => setShowSettings(true)} />
   )

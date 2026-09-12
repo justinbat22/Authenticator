@@ -40,22 +40,42 @@ export function AccountListScreen({ onOpenSettings }: AccountListScreenProps) {
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
       <header
         style={{
-          display: 'flex',
+          display: 'grid',
+          gridTemplateColumns: '1fr auto 1fr',
           alignItems: 'center',
-          justifyContent: 'space-between',
           padding: 'var(--space-4) var(--space-5)',
           borderBottom: '1px solid var(--color-border)',
         }}
       >
-        <h1 style={{ fontSize: 19, fontFamily: 'MyFont, sans-serif' }}>AUTHENTICATOR</h1>
-        <div style={{ display: 'flex', gap: 4 }}>
-          <button type="button" onClick={lock} aria-label="Lock vault" className="btn-ghost" style={iconBtn}>
-            <Lock size={19} />
-          </button>
-          <button type="button" onClick={onOpenSettings} aria-label="Settings" className="btn-ghost" style={iconBtn}>
-            <SettingsIcon size={19} />
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={lock}
+          aria-label="Lock vault"
+          className="btn-ghost"
+          style={{ ...iconBtn, justifySelf: 'start' }}
+        >
+          <Lock size={19} />
+        </button>
+        <h1
+          style={{
+            fontSize: 19,
+            fontFamily: 'var(--font-wordmark)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.02em',
+            justifySelf: 'center',
+          }}
+        >
+          Authenticator
+        </h1>
+        <button
+          type="button"
+          onClick={onOpenSettings}
+          aria-label="Settings"
+          className="btn-ghost"
+          style={{ ...iconBtn, justifySelf: 'end' }}
+        >
+          <SettingsIcon size={19} />
+        </button>
       </header>
 
       {accounts.length > 0 ? (

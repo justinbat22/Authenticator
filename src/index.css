@@ -7,6 +7,14 @@
 @import '@fontsource/ibm-plex-mono/600.css';
 @import './styles/tokens.css';
 
+@font-face {
+  font-family: 'MyFont';
+  src: url('/fonts/sumvp.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 *,
 *::before,
 *::after {
@@ -211,11 +219,4 @@ a {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
-}
-@font-face {
-  font-family: 'MyFont';
-  src: url('/fonts/sumvp.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
 }
