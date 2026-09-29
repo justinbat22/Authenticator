@@ -31,13 +31,6 @@ export async function enrollWebAuthnWithPassphrase(
     throw new IncorrectPassphraseError()
   }
   const webAuthn = await registerWebAuthnUnlock(vmkBytes, accountLabel)
-  if (!webAuthn) {
-    throw new Error(
-      'Device unlock could not be set up. This authenticator did not return the key material ' +
-        'required for it — it either does not support the WebAuthn PRF extension, or the ' +
-        'ceremony was cancelled. Your passphrase still works as normal.',
-    )
-  }
   const updated: VaultMeta = { ...meta, webAuthn }
   await saveVaultMeta(updated)
   return updated
